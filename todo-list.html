@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To-Do List</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #6a11cb, #2575fc);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+        #app {
+            background-color: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            border-radius: 25px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+            width: 400px;
+            max-width: 95%;
+            animation: fadeInScale 1s ease-in-out;
+        }
+        h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 25px;
+            text-shadow: 1px 1px 8px rgba(0,0,0,0.15);
+        }
+        input[type="text"] {
+            width: calc(100% - 20px);
+            padding: 14px;
+            margin-bottom: 20px;
+            border-radius: 12px;
+            border: 1px solid #ccc;
+            transition: all 0.3s;
+        }
+        input[type="text"]:focus {
+            border-color: #2575fc;
+            box-shadow: 0 0 20px rgba(37, 117, 252, 0.5);
+            outline: none;
+            transform: scale(1.02);
+        }
+        button {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            background: linear-gradient(90deg, #2575fc, #6a11cb);
+            color: white;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1rem;
+            transition: all 0.3s;
+            margin-bottom: 20px;
+        }
+        button:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+            max-height: 350px;
+            overflow-y: auto;
+            padding-right: 5px;
+        }
+        li {
+            padding: 14px;
+            margin-bottom: 14px;
+            border-radius: 16px;
+            background: linear-gradient(90deg, #f0f0f0, #e0e0e0);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.4s;
+            transform: translateX(-50px);
+            opacity: 0;
+            animation: slideIn 0.5s forwards;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+        li:hover {
+            transform: scale(1.03);
+            background: linear-gradient(90deg, #e0e0e0, #d0d0d0);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .supprimer {
+            background-color: #ff4d4d;
+            border: none;
+            border-radius: 10px;
+            padding: 8px 12px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .supprimer:hover {
+            background-color: #ff1a1a;
+            transform: scale(1.25) rotate(-10deg);
+            box-shadow: 0 5px 12px rgba(0,0,0,0.3);
+        }
+        @keyframes fadeInScale {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-50px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <h2>To-Do List</h2>
+        <input type="text" id="tache-input" placeholder="Ajouter une tâche...">
+        <button id="btn-ajouter">Ajouter</button>
+        <ul id="liste-taches"></ul>
+    </div>
+    <audio id="son-ajout" src="https://freesound.org/data/previews/331/331912_3248244-lq.mp3"></audio>
+    <audio id="son-supprimer" src="https://freesound.org/data/previews/256/256113_4486188-lq.mp3"></audio>
+    <audio id="son-survol" src="https://freesound.org/data/previews/341/341695_6260285-lq.mp3"></audio>
+    <script>
+        const inputTache = document.getElementById('tache-input');
+        const btnAjouter = document.getElementById('btn-ajouter');
+        const listeTaches = document.getElementById('liste-taches');
+        const sonAjout = document.getElementById('son-ajout');
+        const sonSupprimer = document.getElementById('son-supprimer');
+        const sonSurvol = document.getElementById('son-survol');
+        let interactionAutorisee = false;
+        document.body.addEventListener('click',()=>{interactionAutorisee=true},{once:true});
+        btnAjouter.addEventListener('mouseenter',()=>{if(interactionAutorisee){sonSurvol.currentTime=0;sonSurvol.play();}});
+        function ajouterTache(){
+            const texte = inputTache.value.trim();
+            if(texte==='') return;
+            const tache = document.createElement('li');
+            tache.textContent=texte;
+            const btnSuppr=document.createElement('button');
+            btnSuppr.textContent='Supprimer';
+            btnSuppr.className='supprimer';
+            btnSuppr.onmouseenter=()=>{if(interactionAutorisee){sonSurvol.currentTime=0;sonSurvol.play();}};
+            btnSuppr.onclick=(e)=>{e.stopPropagation();if(interactionAutorisee){sonSupprimer.currentTime=0;sonSupprimer.play();} tache.style.transform='scale(0) rotate(-20deg)'; tache.style.opacity=0; setTimeout(()=>tache.remove(),400);};
+            tache.appendChild(btnSuppr);
+            listeTaches.appendChild(tache);
+            if(interactionAutorisee){sonAjout.currentTime=0;sonAjout.play();}
+            inputTache.value='';
+        }
+        btnAjouter.addEventListener('click',ajouterTache);
+        inputTache.addEventListener('keypress',(e)=>{if(e.key==='Enter') ajouterTache();});
+    </script>
+</body>
+</html>
