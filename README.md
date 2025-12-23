@@ -1,21 +1,21 @@
 # To-Do List
 
-Application web simple pour gérer vos tâches quotidiennes.
+A simple web application featuring a to-do list to manage your daily tasks.A simple web application featuring a to-do list to manage your daily tasks.
 
 ## Description
 
-Cette application permet :
+This application allows you to:
 
-- D'ajouter des tâches.
-- De supprimer des tâches.
-- D'avoir des animations fluides et des effets sonores lors de l'ajout, de la suppression et du survol des boutons.
+- Add tasks.
 
-L'interface est moderne et responsive.
+- Delete tasks.
+
+- Enjoy smooth animations and sound effects when adding, deleting, and hovering over buttons.
+
+The interface is modern and responsive.
 
 ## Technologies
 
 - HTML
 - CSS
 - JavaScript
-
-# todo-list
